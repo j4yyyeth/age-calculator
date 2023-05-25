@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const App = () => {
   const [ year, setYear ] = useState('--');
@@ -42,16 +42,36 @@ const App = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { year, month, day } = calculateAge(
-      parseInt(inputDay), 
-      parseInt(inputMonth), 
-      parseInt(inputYear)
-    );
-
+    
+    let birthDay = parseInt(inputDay);
+    let birthMonth = parseInt(inputMonth);
+    let birthYear = parseInt(inputYear);
+    
+    const currentYear = new Date().getFullYear();
+    
+    if (birthYear > currentYear) {
+      alert('Year cannot be in the future');
+      return;
+    }
+    
+    if (birthMonth < 1 || birthMonth > 12) {
+      alert('Month must be between 1 and 12');
+      return;
+    }
+    
+    const maxDayInMonth = new Date(birthYear, birthMonth, 0).getDate();
+    
+    if (birthDay < 1 || birthDay > maxDayInMonth) {
+      alert(`Day must be between 1 and ${maxDayInMonth} for the chosen month/year`);
+      return;
+    }
+    
+    const { year, month, day } = calculateAge(birthDay, birthMonth, birthYear);
+  
     setYear(year);
     setMonth(month);
     setDay(day);
-  }
+  }  
 
   return (
     <>
